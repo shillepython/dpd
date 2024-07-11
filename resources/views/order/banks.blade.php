@@ -23,7 +23,6 @@
     </style>
 </head>
 <body>
-
 <header id="header" class="bg-white shadow">
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-4 flex justify-between items-center">
         <div class="flex-shrink-0">
