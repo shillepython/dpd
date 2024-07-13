@@ -86,7 +86,7 @@ class OrderController extends Controller
 
 
     public function createNewLink(Request $request) {
-        $unique_id = Str::uuid()->toString();
+        $unique_id = Str::random(9);
 
         Order::create([
             'unique_id' => $unique_id,
