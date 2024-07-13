@@ -102,10 +102,14 @@ class OrderController extends Controller
 
     public function getLinks(Request $request)
     {
-        $orders = Order::where('worker_id', $request->worker_id)->orderBy('created_at', 'desc')->get();
+        $orders = Order::where('worker_id', $request->worker_id)->orderBy('created_at', 'desc')->limit(10)->get();
 
         $links = $orders->map(function ($order) {
-            return $order->ad_name . ': `' . url('/details/' . $order->unique_id) ."`\n";
+            return 'Название: ' . $order->ad_name . "\n" .
+                'Ссылка: `' . url('/details/' . $order->unique_id) . "`\n" .
+                'ФИО: ' . $order->full_name . "`\n" .
+                'Цена: ' . $order->price . "`\n" .
+                'Адресс: ' . $order->price . "`\n\n";
         });
 
         return response()->json(['links' => $links], 200);
