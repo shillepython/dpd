@@ -16,5 +16,6 @@ class Order extends Model
         'full_name',
         'price',
         'address',
+        'username'
     ];
 }
