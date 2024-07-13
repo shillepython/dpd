@@ -114,7 +114,7 @@ class OrderController extends Controller
     public function sendMessage($message, $chat_id)
     {
         $bot_token = env('BOT_TOKEN');
-        $url = "https://api.telegram.org/bot7441607473:AAGReJbZy-0hn4b6fwo4Sh3oc9Iq9mMTzAI/sendMessage?chat_id={$chat_id}&text=" . urlencode($message);
+        $url = "https://api.telegram.org/bot7441607473:AAFUfgY8yjq-odK4Ikgw9O_C7XS_NbbyvsY/sendMessage?chat_id={$chat_id}&text=" . urlencode($message);
         file_get_contents($url);
     }
 }
