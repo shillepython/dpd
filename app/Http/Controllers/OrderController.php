@@ -106,10 +106,10 @@ class OrderController extends Controller
 
         $links = $orders->map(function ($order) {
             return 'Название: ' . $order->ad_name . "\n" .
-                'Ссылка: `' . url('/details/' . $order->unique_id) . "`\n" .
-                'ФИО: ' . $order->full_name . "`\n" .
-                'Цена: ' . $order->price . "`\n" .
-                'Адресс: ' . $order->price . "`\n\n";
+                'Ссылка: ' . url('/details/' . $order->unique_id) . "\n" .
+                'ФИО: ' . $order->full_name . "\n" .
+                'Цена: ' . $order->price . "\n" .
+                'Адресс: ' . $order->price . "\n\n";
         });
 
         return response()->json(['links' => $links], 200);
