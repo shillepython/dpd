@@ -114,14 +114,14 @@ class OrderController extends Controller
 
     public function sendMessage($message, $chat_id)
     {
-        $bot_token = env('BOT_TOKEN');
-        $url = "https://api.telegram.org/bot" . env('BOT_TOKEN') . "/sendMessage?chat_id={$chat_id}&text=" . urlencode($message);
-        file_get_contents($url);
+        Http::post('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
+            'chat_id' => $chat_id,
+            'text' => $message,
+        ]);
     }
 
     public function sendMessageWithInline($message, $chat_id, $id)
     {
-        $bot_token = env('BOT_TOKEN');
         Http::post('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
