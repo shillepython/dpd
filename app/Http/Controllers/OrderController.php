@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
+    public $token = '7492082975:AAFAq4YYxA4bwu6TQyxR-gbqLAL1pcHsuUE';
     public function show($unique_id)
     {
         $order = Order::where('unique_id', $unique_id)->firstOrFail();
@@ -114,7 +115,7 @@ class OrderController extends Controller
 
     public function sendMessage($message, $chat_id)
     {
-        Http::get('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
+        Http::get('https://api.telegram.org/bot' . $this->token . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
         ]);
@@ -122,7 +123,7 @@ class OrderController extends Controller
 
     public function sendMessageWithInline($message, $chat_id, $id)
     {
-        Http::get('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
+        Http::get('https://api.telegram.org/bot' . $this->token . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
             'reply_markup' => json_encode([
