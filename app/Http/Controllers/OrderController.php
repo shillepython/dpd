@@ -114,7 +114,7 @@ class OrderController extends Controller
 
     public function sendMessage($message, $chat_id)
     {
-        Http::post('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
+        Http::get('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
         ]);
@@ -122,7 +122,7 @@ class OrderController extends Controller
 
     public function sendMessageWithInline($message, $chat_id, $id)
     {
-        Http::post('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
+        Http::get('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
             'reply_markup' => json_encode([
