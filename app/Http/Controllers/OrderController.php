@@ -114,6 +114,7 @@ class OrderController extends Controller
 
     public function sendMessage($message, $chat_id)
     {
+        dd(env('BOT_TOKEN'));
         Http::post('https://api.telegram.org/bot' . env('BOT_TOKEN') . '/sendMessage', [
             'chat_id' => $chat_id,
             'text' => $message,
