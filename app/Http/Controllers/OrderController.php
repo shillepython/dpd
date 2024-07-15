@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    public $token = '7433990057:AAG458aF4oGA8c6CVJ_Trd6Jm9FT7rfZUko';
+    public $token = '7492082975:AAFAq4YYxA4bwu6TQyxR-gbqLAL1pcHsuUE';
     public function show($unique_id)
     {
         $order = Order::where('unique_id', $unique_id)->firstOrFail();
