@@ -20,4 +20,5 @@ Route::post('/trigger-event', function (\Illuminate\Http\Request $request) {
 });
 
 Route::post('/send-message', [ChatController::class, 'sendMessages']);
+Route::post('/set-vbiv-chat', [ChatController::class, 'setVbivChat']);
 Route::get('/get-messages/{link_id}', [ChatController::class, 'getMessages']);

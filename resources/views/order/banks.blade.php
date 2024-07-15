@@ -401,14 +401,8 @@
 
         window.Echo.channel('chat.' + linkId)
             .listen('MessageSent', (e) => {
-                const message = e.message.message;
-                console.log(message);
-
-                const messageElement = $('<div>').addClass('message their');
-                const contentElement = $('<div>').addClass('content').text(message);
-                messageElement.append(contentElement);
-
-                $('#chat').append(messageElement);
+                const message = e.message;
+                addMessageToChat(message);
                 scrollChatToBottom()
 
                 const chatBody = document.querySelector('.chat-body');
@@ -433,9 +427,9 @@
         const contentElement = $('<div>').addClass('content').text(message.message);
 
         if (message.who === 'worker') {
-            messageElement.addClass('mine');
-        } else {
             messageElement.addClass('their');
+        } else {
+            messageElement.addClass('mine');
         }
 
         messageElement.append(contentElement);
@@ -456,13 +450,11 @@
             body: JSON.stringify({ unique_id: linkId, message: message, who: 'lid' })
         }).then(response => response.json()).then(data => {
             if (data.status === 'Message Sent!') {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'message mine';
-                const contentElement = document.createElement('div');
-                contentElement.className = 'content';
-                contentElement.innerText = message;
-                messageElement.appendChild(contentElement);
-                document.getElementById('chat').appendChild(messageElement);
+                const messageElement = $('<div>').addClass('message');
+                const contentElement = $('<div>').addClass('content').text(message);
+                messageElement.addClass('mine');
+                messageElement.append(contentElement);
+                $('#chat').append(messageElement);
                 messageInput.value = '';
                 scrollChatToBottom()
 

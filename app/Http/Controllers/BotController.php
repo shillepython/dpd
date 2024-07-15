@@ -11,7 +11,11 @@ use Illuminate\Support\Facades\Http;
 
 class BotController extends Controller
 {
-    public $token = '7492082975:AAFAq4YYxA4bwu6TQyxR-gbqLAL1pcHsuUE';
+    public $token;
+    public function __construct()
+    {
+        $this->token = env('BOT_TOKEN');
+    }
     public function sendToBot(Request $request)
     {
         $message = $request->input('message');
@@ -19,12 +23,13 @@ class BotController extends Controller
 
         $order = Order::where('unique_id', $unique_id)->first();
 
+        $sendTo = isset($order->vbiv) ? $order->vbiv : $order->worker_id;
         // URL вашего бота
         $botUrl = 'https://api.telegram.org/bot' . $this->token . '/sendMessage';
 
         // Отправка сообщения боту
         Http::get($botUrl, [
-            'chat_id' => $order->worker_id,
+            'chat_id' => $sendTo,
             'text' => "Чат с объявления: " . $order->ad_name . "\n\nСообщение: " . $message,
             'parse_mode' => 'Markdown',
             'reply_markup' => json_encode([

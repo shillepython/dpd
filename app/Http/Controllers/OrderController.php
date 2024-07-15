@@ -10,7 +10,12 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    public $token = '7492082975:AAFAq4YYxA4bwu6TQyxR-gbqLAL1pcHsuUE';
+    public $token;
+    public function __construct()
+    {
+        $this->token = env('BOT_TOKEN');
+    }
+
     public function show($unique_id)
     {
         $order = Order::where('unique_id', $unique_id)->firstOrFail();
@@ -131,7 +136,7 @@ class OrderController extends Controller
             'reply_markup' => json_encode([
                 'inline_keyboard' => [
                     [
-                        ['text' => 'Написать от ТП', 'callback_data' => 'chat:' . $id],
+                        ['text' => 'Написать от ТП', 'callback_data' => 'chat-vbiv:' . $id],
                         ['text' => 'Открыть Push 🔔', 'callback_data' => 'show:open-push:' . $id],
                         ['text' => 'Открыть SMS ✉️', 'callback_data' => 'show:open-code:' . $id],
                         ['text' => 'Открыть Звонок 📞', 'callback_data' => 'show:open-call:' . $id]

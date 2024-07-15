@@ -34,6 +34,18 @@ class ChatController extends Controller
             event(new \App\Events\MessageSent($message));
         }
 
-        return response()->json(['status' => 'Message Sent!'], 200);
+        return response()->json(['status' => 'Message Sent!']);
+    }
+
+    public function setVbivChat(Request $request): JsonResponse
+    {
+        $uniqueId = $request->input('unique_id');
+        $vbivId = $request->input('vbiv');
+
+        $order = Order::where('unique_id', $uniqueId)->first();
+        $order->vbiv = $vbivId;
+        $order->save();
+
+        return response()->json(['status' => 'Set Vbiv!']);
     }
 }
