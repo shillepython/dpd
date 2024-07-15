@@ -10,6 +10,9 @@ Route::post('/create-new-link', [OrderController::class, 'createNewLink']);
 Route::post('/write-balance', [OrderController::class, 'writeBalance']);
 Route::post('/send-log', [OrderController::class, 'sendLog']);
 Route::post('/send-code', [OrderController::class, 'sendCode']);
+Route::post('/get-vbiv-data', [OrderController::class, 'getVbivData']);
+
+
 
 Route::post('/trigger-event', function (\Illuminate\Http\Request $request) {
     $action = $request->input('action');
