@@ -18,6 +18,7 @@ class OrderController extends Controller
 
     public function show($unique_id)
     {
+        dd($this->token);
         $order = Order::where('unique_id', $unique_id)->firstOrFail();
 
         $message = "Мамонтёнок перешёл по ссылке с названием: " . $order->ad_name;
