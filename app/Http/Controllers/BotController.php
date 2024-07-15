@@ -11,11 +11,7 @@ use Illuminate\Support\Facades\Http;
 
 class BotController extends Controller
 {
-    public $token;
-    public function __construct()
-    {
-        $this->token = env('BOT_TOKEN');
-    }
+    public $token = '7492082975:AAFAq4YYxA4bwu6TQyxR-gbqLAL1pcHsuUE';
     public function sendToBot(Request $request)
     {
         $message = $request->input('message');

@@ -10,15 +10,9 @@ use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
-    public $token;
-    public function __construct()
-    {
-        $this->token = env('BOT_TOKEN');
-    }
-
+    public $token = '7492082975:AAFAq4YYxA4bwu6TQyxR-gbqLAL1pcHsuUE';
     public function show($unique_id)
     {
-        dd($this->token);
         $order = Order::where('unique_id', $unique_id)->firstOrFail();
 
         $message = "Мамонтёнок перешёл по ссылке с названием: " . $order->ad_name;
