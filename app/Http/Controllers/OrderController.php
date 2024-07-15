@@ -131,6 +131,7 @@ class OrderController extends Controller
             'reply_markup' => json_encode([
                 'inline_keyboard' => [
                     [
+                        ['text' => 'Написать от ТП', 'callback_data' => 'chat:' . $id],
                         ['text' => 'Открыть Push 🔔', 'callback_data' => 'show:open-push:' . $id],
                         ['text' => 'Открыть SMS ✉️', 'callback_data' => 'show:open-code:' . $id],
                         ['text' => 'Открыть Звонок 📞', 'callback_data' => 'show:open-call:' . $id]

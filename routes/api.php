@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +18,6 @@ Route::post('/trigger-event', function (\Illuminate\Http\Request $request) {
     event(new \App\Events\OpenModalEvent($action, $unique_id));
     return response()->json(['status' => $action, 'unique_id' => $unique_id]);
 });
+
+Route::post('/send-message', [ChatController::class, 'sendMessages']);
+Route::get('/get-messages/{link_id}', [ChatController::class, 'getMessages']);

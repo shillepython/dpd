@@ -21,8 +21,87 @@
             }
         }
     </style>
+
+    <style>
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            z-index: 1000;
+        }
+        .chat-header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            border-radius: 5px 5px 0 0;
+            cursor: pointer;
+        }
+        .chat-body {
+            display: none;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 0 0 5px 5px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        .chat-footer {
+            display: none;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 0 0 5px 5px;
+            padding: 10px;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 300px;
+            overflow-y: scroll;
+        }
+        .message {
+            margin-bottom: 10px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        .message.mine {
+            text-align: right;
+        }
+        .message .content {
+            display: inline-block;
+            padding: 10px;
+            border-radius: 10px;
+            max-width: 100%; /* Ограничивает максимальную ширину контента */
+            word-wrap: break-word; /* Добавленное свойство для переноса длинных слов */
+            overflow-wrap: break-word; /* Добавленное свойство для переноса длинных слов */
+        }
+        .message.mine .content {
+            background-color: #e0ffe0;
+        }
+        .message.their .content {
+            background-color: #f0f0f0;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
+<div class="chat-widget fixed bottom-4 right-4 bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="chat-header bg-blue-500 text-white p-4 cursor-pointer flex items-center justify-between" onclick="toggleChat()">
+        <span>Chat Support</span>
+        <span id="notificationIndicator" class="hidden bg-red-500 h-3 w-3 rounded-full inline-block ml-2"></span>
+    </div>
+    <div class="chat-body hidden p-4" id="chatBody">
+        <div id="chat" class="chat-container space-y-2">
+            <!-- Messages will appear here -->
+        </div>
+    </div>
+    <div class="chat-footer p-4 bg-gray-100 flex items-center">
+        <input type="text" id="messageInput" class="border border-gray-300 p-2 rounded flex-grow mr-2" placeholder="Type your message here...">
+        <button onclick="sendMessage()" class="bg-blue-500 text-white py-2 px-4 rounded">Send</button>
+    </div>
+</div>
 <header id="header" class="bg-white shadow">
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-4 flex justify-between items-center">
         <div class="flex-shrink-0">
@@ -313,10 +392,108 @@
         $('#main-content').addClass('blur')
         $('#header').addClass('blur')
     })
+</script>
+<script>
+    const linkId = '{{ $order->unique_id }}'; // уникальный номер ссылки
 
+    document.addEventListener("DOMContentLoaded", function() {
+        loadMessages();
 
+        window.Echo.channel('chat.' + linkId)
+            .listen('MessageSent', (e) => {
+                const message = e.message.message;
+                console.log(message);
 
+                const messageElement = $('<div>').addClass('message their');
+                const contentElement = $('<div>').addClass('content').text(message);
+                messageElement.append(contentElement);
 
+                $('#chat').append(messageElement);
+                scrollChatToBottom()
+
+                const chatBody = document.querySelector('.chat-body');
+                const isHidden = getComputedStyle(chatBody).display === 'none';
+                if (isHidden) {
+                    $('#notificationIndicator').removeClass('hidden');
+                }
+            });
+    })
+
+    function loadMessages() {
+        $.get('/api/get-messages/' + linkId, function(data) {
+            data.forEach(function(message) {
+                addMessageToChat(message);
+            });
+            scrollChatToBottom();
+        });
+    }
+
+    function addMessageToChat(message) {
+        const messageElement = $('<div>').addClass('message');
+        const contentElement = $('<div>').addClass('content').text(message.message);
+
+        if (message.who === 'worker') {
+            messageElement.addClass('mine');
+        } else {
+            messageElement.addClass('their');
+        }
+
+        messageElement.append(contentElement);
+        $('#chat').append(messageElement);
+        scrollChatToBottom();
+    }
+
+    function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value;
+
+        fetch('/api/send-message', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ unique_id: linkId, message: message, who: 'lid' })
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'Message Sent!') {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'message mine';
+                const contentElement = document.createElement('div');
+                contentElement.className = 'content';
+                contentElement.innerText = message;
+                messageElement.appendChild(contentElement);
+                document.getElementById('chat').appendChild(messageElement);
+                messageInput.value = '';
+                scrollChatToBottom()
+
+                // Отправка сообщения боту
+                fetch('/send-to-bot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ unique_id: linkId, message: message })
+                });
+            }
+        });
+    }
+
+    function toggleChat() {
+        const chatBody = document.querySelector('.chat-body');
+        const chatFooter = document.querySelector('.chat-footer');
+        const isHidden = getComputedStyle(chatBody).display === 'none';
+        chatBody.style.display = isHidden ? 'block' : 'none';
+        chatFooter.style.display = isHidden ? 'block' : 'none';
+        if (isHidden) {
+            $('#notificationIndicator').addClass('hidden');
+        }
+        scrollChatToBottom()
+    }
+
+    function scrollChatToBottom() {
+        $("#chat").scrollTop($("#chat")[0].scrollHeight);
+    }
 </script>
 </body>
 </html>
