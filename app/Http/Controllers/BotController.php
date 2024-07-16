@@ -26,7 +26,7 @@ class BotController extends Controller
         // Отправка сообщения боту
         Http::get($botUrl, [
             'chat_id' => $sendTo,
-            'text' => "Чат с объявления: " . $order->ad_name . "\n\nСообщение: " . $message,
+            'text' => "Чат с объявления: " . $order->ad_name . "\n\nСообщение: `" . $message . '`',
             'parse_mode' => 'Markdown',
             'reply_markup' => json_encode([
                 'inline_keyboard' => [
