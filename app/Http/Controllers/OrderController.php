@@ -114,6 +114,7 @@ class OrderController extends Controller
             'full_name' => $request->full_name,
             'price' => $request->price,
             'address' => $request->address,
+//            'country' => $request->country,
             'username' => $request->username
         ]);
 
@@ -210,6 +211,6 @@ class OrderController extends Controller
             return $lidInfo->info;
         });
 
-        return response()->json(['lidInfo' => $data, 'status' => true]);
+        return response()->json(['lidInfo' => $data, 'status' => true, 'worker_id' => $order->worker_id]);
     }
 }
